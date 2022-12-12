@@ -77,7 +77,7 @@ const Home = ({navigation}) => {
   useEffect(() => {
     axios
       .get(
-        `https://coffeeadictbe.vercel.app/coffee/product?category=${category}&sorting=${sort}&page=1&limit=10&name_product=${search}`,
+        `coffee-time-be-new.vercel.app/coffee/product?category=${category}&sorting=${sort}&page=1&limit=10&name_product=${search}`,
       )
       .then(res => {
         setProduct(res.data.result.data), setNotfound(search);
