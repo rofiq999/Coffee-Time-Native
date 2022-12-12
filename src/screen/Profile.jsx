@@ -252,7 +252,7 @@ const Profile = ({navigation}) => {
             <Modal.Footer>
               <Button.Group space={2}>
                 <Button
-                  colorScheme="success"
+                  colorScheme="primary"
                   width={20}
                   onPress={() => {
                     resetPWD();
