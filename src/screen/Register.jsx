@@ -28,7 +28,7 @@ const Register = ({navigation}) => {
 
   const handleRegister = () => {
     return axios
-      .post(`coffee-time-be-new.vercel.app/coffee/users`, {
+      .post(`https://coffee-time-be-new.vercel.app/coffee/users`, {
         email: email,
         passwords: password,
         phone_number: phone,

@@ -17,7 +17,7 @@ const ProductDetail = ({navigation, route}) => {
 
 
   const getProductByid = () => {
-    axios.get(`coffee-time-be-new.vercel.app/coffee/product/${id_product}`)
+    axios.get(`https://coffee-time-be-new.vercel.app/coffee/product/${id_product}`)
     .then((res) => {
       setProduct(res.data.result.data[0])
       // console.log(res.data.result.data[0])
