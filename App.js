@@ -277,42 +277,6 @@ function App({ navigation }) {
             }}
           />
           <Stack.Screen
-            name="NewProduct"
-            component={NewProduct}
-            options={{
-              headerShown: true,
-              headerTitle: 'New Product',
-              headerTitleAlign: 'center',
-              headerTitleStyle: {
-                color: 'black',
-                fontWeight: '700',
-                fontSize: 20,
-              },
-              headerTransparent: true,
-              headerStyle: {
-                backgroundColor: '#f2f2f2',
-              },
-            }}
-          />
-          <Stack.Screen
-            name="New_Promo"
-            component={New_Promo}
-            options={{
-              headerShown: true,
-              headerTitle: 'New Promo',
-              headerTitleAlign: 'center',
-              headerTitleStyle: {
-                color: 'black',
-                fontWeight: '700',
-                fontSize: 20,
-              },
-              headerTransparent: true,
-              headerStyle: {
-                backgroundColor: '#f2f2f2',
-              },
-            }}
-          />
-          <Stack.Screen
             name="See_All"
             component={See_All}
             options={{
