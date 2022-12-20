@@ -9,7 +9,8 @@ const ACTION_STRING = {
   fulfilled: `_${ActionType.Fulfilled}`,
   rejected: `_${ActionType.Rejected}`,
   profile: 'PROFILE',
-  product: 'PRODUCT'
+  product: 'PRODUCT',
+  logout: 'LOGOUT',
 };
 
 export default ACTION_STRING;

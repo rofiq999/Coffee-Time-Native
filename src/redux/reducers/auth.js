@@ -28,12 +28,13 @@ const initialState = {
     qty: 0,
     payment_method: null,
     size: null,
-    id_promo: null
+    id_promo: null,
   },
 };
 
 const authReducer = (prevState = initialState, {type, payload}) => {
-  const {product, logout, profile, pending, rejected, fulfilled} = ACTION_STRING;
+  const {product, logout, profile, pending, rejected, fulfilled} =
+    ACTION_STRING;
 
   switch (type) {
     // profile
@@ -74,9 +75,8 @@ const authReducer = (prevState = initialState, {type, payload}) => {
         },
       };
 
-
-      // product
-      case product + fulfilled:
+    // product
+    case product + fulfilled:
       return {
         ...prevState,
         isError: false,
@@ -84,20 +84,10 @@ const authReducer = (prevState = initialState, {type, payload}) => {
         isLoading: false,
         error: null,
         product: {
-          id_product: payload.data.id_product,
-          price: payload.data.price,
-          name_product: payload.data.name_product,
-          status: payload.data.status,
-          delivery: payload.data.delivery,
-          total: payload.data.total,
-          image: payload.data.image,
-          qty: payload.data.qty,
-          payment_method: payload.data.payment_method,
-          size: payload.data.size,
-          id_promo: payload.data.id_promo
+          ...prevState.product,
+          ...payload.data,
         },
       };
-
 
     // logout
     case logout + pending:
@@ -109,8 +99,8 @@ const authReducer = (prevState = initialState, {type, payload}) => {
     case logout + rejected:
       return {
         ...prevState,
-        isLoading: true,
-        isError: false,
+        isLoading: false,
+        isError: true,
         error: payload.error.response.data.msg,
       };
 

@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   content_all: {
-    marginTop: 50,
+    marginTop: 20,
     marginLeft: '10%',
     width: `80%`,
   },
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     fontFamily: `Poppins`,
     fontSize: 34,
     fontWeight: '900',
-    marginTop:"5%"
+    marginTop: '5%',
   },
   address_container: {
     display: 'flex',

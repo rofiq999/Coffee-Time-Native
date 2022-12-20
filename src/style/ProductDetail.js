@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
   },
   img_bar: {
     flex: 1,
-    paddingTop: verticalScale(70),
+    paddingTop: verticalScale(30),
   },
   img_product: {
     borderRadius: 200,
-    width:200,
-    height:200,
+    width: 200,
+    height: 200,
   },
   name_product: {
     color: '#000',
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(5),
   },
   desc_text: {
-    color:'black'
-  }
+    color: 'black',
+  },
 });
 
 export default styles;

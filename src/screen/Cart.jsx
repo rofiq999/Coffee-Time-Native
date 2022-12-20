@@ -1,17 +1,30 @@
-import {View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import React from 'react';
 import ArrowRight from 'react-native-vector-icons/Feather';
 import ArrowRightSec from 'react-native-vector-icons/AntDesign';
 import styles from '../style/Cart';
+import ButtonOpacity from '../components/ButtonOpacity';
 import {useDispatch, useSelector} from 'react-redux';
 import authAction from '../redux/actions/auth';
 import {useNavigation} from '@react-navigation/native';
+import image from '../assets/empty/noorder.png';
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '../helpers/Metrics';
 
-const Cart = ({navigation}) => {
+const Cart = () => {
   const dispatch = useDispatch();
   const product = useSelector(state => state.auth.product);
-  const [quantity, setQuantity] = useState(1);
-  const navigate = useNavigation();
+  const navigation = useNavigation();
 
   const costing = price => {
     return (
@@ -23,28 +36,30 @@ const Cart = ({navigation}) => {
   };
 
   const min = () => {
-    setQuantity(quantity === 1 ? 1 : quantity - 1);
+    
+    dispatch(
+      authAction.productThunk({
+        total: product.price * product.qty + (product.price * 10) / 100,
+        qty: (product.qty === 1 ? 1 : product.qty - 1),
+      }),
+    );
   };
 
   const max = () => {
-    setQuantity(quantity + 1);
+    dispatch(
+      authAction.productThunk({
+        total: product.price * product.qty + (product.price * 10) / 100,
+        qty: product.qty + 1,
+      }),
+    );
   };
 
   const handleRedux = () => {
     dispatch(
       authAction.productThunk(
         {
-          id_product: product.id_product,
-          price: product.price,
-          name_product: product.name_product,
-          status: null,
-          delivery: null,
-          total: product.price * quantity + (product.price * 10) / 100,
-          image: product.image,
-          qty: quantity,
-          payment_method: null,
-          size: product.size,
-          id_promo: product.id_promo,
+          total: product.price * product.qty + (product.price * 10) / 100,
+          qty: product.qty,
         },
         () => {
           navigation.navigate('Delivery');
@@ -53,82 +68,158 @@ const Cart = ({navigation}) => {
     );
   };
 
-  return (
-    <ScrollView>
-      <View style={styles.content_all}>
-        <View style={styles.content_product}>
-          <View style={styles.content_img_product}>
-            <Image source={{uri: product.image}} style={styles.icon_product} />
-            <Text style={styles.price}>{costing(product.price)} </Text>
-          </View>
-          <View style={styles.content_veggie}>
-            <Text style={styles.veggie}>{product.name_product}</Text>
-            <View style={styles.content_counter}>
-              <View style={styles.content_down} onStartShouldSetResponder={min}>
-                <Text style={styles.down}>—</Text>
-              </View>
+  const handleReduxCupon = () => {
+    dispatch(
+      authAction.productThunk(
+        {
+          qty: product.qty,
+        },
+        () => {
+          navigation.navigate('Cupon');
+        },
+      ),
+    );
+  };
+  
 
-              <Text style={styles.number}>{quantity}</Text>
-
-              <View style={styles.content_up} onStartShouldSetResponder={max}>
-                <Text style={styles.up}>+</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        {product.id_promo === null ? (
-          <TouchableOpacity
-            onPress={() => {
-              navigate.push('Cupon');
-            }}>
-            <View style={styles.btn_navigateSec}>
-              <Text style={styles.text_btn}>Apply Delivery Coupons</Text>
-              <ArrowRightSec
-                color="#6A4029"
-                brand={'AntDesign'}
-                name="arrowright"
-                size={25}
-                type="material"
+  if (product.id_product)
+    return (
+      <ScrollView>
+        <View style={styles.content_all}>
+          <View style={styles.content_product}>
+            <View style={styles.content_img_product}>
+              <Image
+                source={{uri: product.image}}
+                style={styles.icon_product}
               />
+              <Text style={styles.price}>{costing(product.price)} </Text>
             </View>
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.cupon_container}>
-            <Text style={styles.text_cupon}>you already use cupon</Text>
+            <View style={styles.content_veggie}>
+              <Text style={styles.veggie}>{product.name_product}</Text>
+              <View style={styles.content_counter}>
+                <View
+                  style={styles.content_down}
+                  onStartShouldSetResponder={min}>
+                  <Text style={styles.down}>—</Text>
+                </View>
+
+                <Text style={styles.number}>{product.qty}</Text>
+
+                <View style={styles.content_up} onStartShouldSetResponder={max}>
+                  <Text style={styles.up}>+</Text>
+                </View>
+              </View>
+            </View>
           </View>
-        )}
-        <View style={styles.content_line}>
-          <View style={styles.line}></View>
+          {product.id_promo === null ? (
+            <TouchableOpacity
+              onPress={() => {
+                handleReduxCupon();
+              }}>
+              <View style={styles.btn_navigateSec}>
+                <Text style={styles.text_btn}>Apply Delivery Coupons</Text>
+                <ArrowRightSec
+                  color="#6A4029"
+                  brand={'AntDesign'}
+                  name="arrowright"
+                  size={25}
+                  type="material"
+                />
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.cupon_container}>
+              <Text style={styles.text_cupon}>you already use cupon</Text>
+            </View>
+          )}
+          <View style={styles.content_line}>
+            <View style={styles.line}></View>
+          </View>
+          <View style={styles.content_total}>
+            <Text style={styles.total}>Item Total</Text>
+            <Text style={styles.idr}>{costing(product.price * product.qty)}</Text>
+          </View>
+          <View style={styles.content_total}>
+            <Text style={styles.total}>Tax</Text>
+            <Text style={styles.idr}>10%</Text>
+          </View>
+          <View style={styles.content_total}>
+            <Text style={styles.subtotal}>Total :</Text>
+            <Text style={styles.sub_idr}>
+              {costing(product.price * product.qty + (product.price * 10) / 100)}
+            </Text>
+          </View>
+          <View
+            style={styles.btn_navigate}
+            onStartShouldSetResponder={handleRedux}>
+            <Text style={styles.text_btn}>CHECKOUT</Text>
+            <ArrowRight
+              color="#6A4029"
+              brand={'Feather'}
+              name="chevron-right"
+              size={25}
+              type="material"
+            />
+          </View>
         </View>
-        <View style={styles.content_total}>
-          <Text style={styles.total}>Item Total</Text>
-          <Text style={styles.idr}>{costing(product.price * quantity)}</Text>
-        </View>
-        <View style={styles.content_total}>
-          <Text style={styles.total}>Tax</Text>
-          <Text style={styles.idr}>10%</Text>
-        </View>
-        <View style={styles.content_total}>
-          <Text style={styles.subtotal}>Total :</Text>
-          <Text style={styles.sub_idr}>
-            {costing(product.price * quantity + (product.price * 10) / 100)}
+      </ScrollView>
+    );
+
+  if (product.id_product === null)
+    return (
+      <ScrollView>
+        <View style={styler.container}>
+          <Image source={image} style={styler.image} />
+          <Text style={styler.title}>No orders yet</Text>
+          <Text style={styler.title_info}>
+            Hit the orange button down below to Create an order
           </Text>
-        </View>
-        <View
-          style={styles.btn_navigate}
-          onStartShouldSetResponder={handleRedux}>
-          <Text style={styles.text_btn}>CHECKOUT</Text>
-          <ArrowRight
-            color="#6A4029"
-            brand={'Feather'}
-            name="chevron-right"
-            size={25}
-            type="material"
+          <ButtonOpacity
+            color={'#6a4029'}
+            text="Start odering"
+            radius={20}
+            colorText="white"
+            height={70}
+            width={`90%`}
+            marginTop={verticalScale(200)}
+            marginBottom={verticalScale(10)}
+            onPressHandler={{
+              onPress: () => navigation.navigate('Home')
+            }}
           />
         </View>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
 };
 
 export default Cart;
+
+const styler = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    background: '#F5F5F8',
+    flex: 1,
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  image: {
+    marginBottom: 25,
+    marginTop: verticalScale(200),
+  },
+  title: {
+    color: '#000',
+    fontFamily: 'Poppins',
+    fontSize: moderateScale(30),
+    fontWeight: '900',
+    lineHeight: 42,
+    marginBottom: 8,
+  },
+  title_info: {
+    fontFamily: 'Poppins',
+    fontSize: moderateScale(17),
+    lineHeight: 26,
+    opacity: 0.6,
+    textAlign: 'center',
+    width: horizontalScale(234),
+  },
+});

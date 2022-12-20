@@ -2,12 +2,15 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   all_container: {
-    marginLeft: '10%',
-    width: '80%',
-    marginTop: '20%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    marginTop: 30,
   },
   container_up: {
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
   },
   input: {
     borderBottomWidth: 1,
@@ -19,10 +22,10 @@ const styles = StyleSheet.create({
     margin: 12,
     outlineWidth: 4,
     padding: 10,
-    width: `80%`,
     color: 'black',
     textAlign: 'center',
     fontWeight: '400',
+    width: '80%',
   },
   input_bottom: {
     borderBottomWidth: 1,
@@ -31,17 +34,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins',
     fontSize: 10,
     height: 40,
-    marginTop:10,
-    marginBottom:10,
+    marginTop: 10,
+    marginBottom: 10,
     outlineWidth: 4,
     padding: 10,
-    width: `90%`,
     color: 'black',
     fontWeight: '400',
   },
   text: {
     color: `black`,
     fontFamily: `Poppins`,
+    textAlign: 'left',
     fontSize: 17,
     fontWeight: '900',
   },
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: 200,
     width: 150,
     height: 150,
-    marginTop:10,
+    marginTop: 10,
   },
 });
 

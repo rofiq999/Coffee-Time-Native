@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    marginTop: 100,
+    marginTop: 30,
     position: 'relative',
   },
   name: {
@@ -118,19 +118,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 10,
   },
-  content_button_link : {
-    width:`100%`,
-    paddingHorizontal:20
+  content_button_link: {
+    width: `100%`,
+    paddingHorizontal: 20,
   },
   input_password: {
     borderBottomWidth: 1,
     paddingBottom: 1,
-    marginVertical:5,
+    marginVertical: 5,
     borderColor: `#9F9F9F`,
-    color:"#9F9F9F"
+    color: '#9F9F9F',
   },
   body_reset: {
-    flexDirection:`column`
+    flexDirection: `column`,
   },
 });
 

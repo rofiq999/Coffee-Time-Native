@@ -1,33 +1,85 @@
-import {View, Text, Image, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  ToastAndroid,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useState} from 'react';
 import styles from '../style/Payment';
-import img_hazzelnut from '../assets/payment/img_hazzelnut.png';
 import Card from 'react-native-vector-icons/FontAwesome';
 import Bank from 'react-native-vector-icons/FontAwesome';
 import Deleivery from 'react-native-vector-icons/MaterialCommunityIcons';
 import ButtonOpacity from '../components/ButtonOpacity';
 import {NativeBaseProvider, Radio} from 'native-base';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { transactions } from '../utils/axios';
+import authAction from '../redux/actions/auth';
+import {transactions} from '../utils/axios';
+// import {useNavigation} from '@react-navigation/native';
+import PushNotification from 'react-native-push-notification';
 
 const Payment = ({navigation}) => {
-  
   const product = useSelector(state => state.auth.product);
+  const dispatch = useDispatch();
+  // const navigation = useNavigation();
 
   const [value, setValue] = useState('Card');
+  const [statusPaid, setStatusPaid] = useState('paid');
+  const [loading, setLoading] = useState(false);
 
+  const handleShowNotification = (name, image) => {
+    PushNotification.localNotification({
+      channelId: 'local-notification',
+      title: 'create payment',
+      message: `your order ${name} is on process`,
+      smallIcon: 'ic_notification',
+      picture: image,
+    });
+  };
 
-  const costing = (price) => {
-    return 'IDR ' + parseFloat(price).toFixed().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-  }
+  const costing = price => {
+    return (
+      'IDR ' +
+      parseFloat(price)
+        .toFixed()
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    );
+  };
 
-  
+  const handleRemoveRedux = () => {
+    dispatch(
+      authAction.productThunk({
+        id_product: null,
+        price: 0,
+        name_product: null,
+        status: null,
+        delivery: null,
+        total: 0,
+        image: null,
+        qty: 0,
+        payment_method: null,
+        size: null,
+        id_promo: null,
+      }),
+    );
+  };
 
   const handleTransactions = async () => {
     try {
-      const getToken = await AsyncStorage.getItem("token")
-      const response = await transactions(getToken, {
+      // if (value === 'Bank' || value === 'Card') {
+      //   setStatusPaid('paid')
+      // } if (value === 'Cash on Delivery') {
+      //   setStatusPaid('pending')
+      // }
+      if (value === 'Bank') setStatusPaid('paid');
+      if (value === 'Card') setStatusPaid('paid');
+      if (value === 'Cash on Delivery') setStatusPaid('pending');
+      setLoading(true);
+      const getToken = await AsyncStorage.getItem('token');
+      console.log(statusPaid);
+      const result = await transactions(getToken, {
         product_id: product.id_product,
         promo_id: product.id_promo,
         delivery_id: product.delivery,
@@ -35,16 +87,26 @@ const Payment = ({navigation}) => {
         qty: product.qty,
         tax: 10,
         total: product.total,
-        status: "success"
-      })
-      console.log(response.data)
-      navigation.push('Home')
-    } catch (error) {
-      console.log(error)
+        status: statusPaid,
+      });
+      // console.log(result.data.result.data.name)
+      await handleShowNotification(
+        result.data.result.data.name,
+        result.data.result.data.image,
+      );
+      // console.log()
+      handleRemoveRedux();
+      setLoading(false);
+      navigation.replace('Home');
+    } catch (err) {
+      ToastAndroid.showWithGravity(
+        err.response.data.msg,
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+      setLoading(false);
     }
-
-  }
-
+  };
 
   return (
     <NativeBaseProvider>
@@ -65,9 +127,9 @@ const Payment = ({navigation}) => {
                     </Text>
                     <Text style={styles.text_hazzel}>x {product.qty}</Text>
                     <Text style={styles.text_hazzel}>
-                      {(product.size === 'M' || product.size === 'm')
+                      {product.size === 'M' || product.size === 'm'
                         ? 'Medium'
-                        : (product.size === 'L' || product.size === 'l')
+                        : product.size === 'L' || product.size === 'l'
                         ? 'Large'
                         : 'Extra Large'}
                     </Text>
@@ -137,27 +199,39 @@ const Payment = ({navigation}) => {
             </View>
             <View style={styles.total}>
               <Text style={styles.text_total}>Shipping</Text>
-              <Text style={styles.text_price}>{(product.delivery === 1) ? costing(5000) : 0}</Text>
+              <Text style={styles.text_price}>
+                {product.delivery === 1 ? costing(5000) : 0}
+              </Text>
             </View>
             <View style={styles.total}>
               <Text style={styles.text_total}>Total</Text>
               <Text style={styles.text_price}>{costing(product.total)}</Text>
             </View>
-            <ButtonOpacity
-              color={'#6A4029'}
-              text="Proceed payment"
-              radius={20}
-              colorText="white"
-              height={60}
-              width={`100%`}
-              marginBottom={20}
-              marginTop={20}
-              onPressHandler={{
-                onPress: handleTransactions,
-                onPressIn: () => console.log('Pressed In'),
-                onPressOut: () => console.log('Pressed Out'),
-              }}
-            />
+            {loading ? (
+              <View style={{marginVertical: 20}}>
+                <ActivityIndicator
+                  style={styles.loading_style}
+                  size="large"
+                  color="#0000ff"
+                />
+              </View>
+            ) : (
+              <ButtonOpacity
+                color={'#6A4029'}
+                text="Proceed payment"
+                radius={20}
+                colorText="white"
+                height={60}
+                width={`100%`}
+                marginBottom={20}
+                marginTop={20}
+                onPressHandler={{
+                  onPress: handleTransactions,
+                  onPressIn: () => console.log('Pressed In'),
+                  onPressOut: () => console.log('Pressed Out'),
+                }}
+              />
+            )}
           </View>
         </View>
       </ScrollView>

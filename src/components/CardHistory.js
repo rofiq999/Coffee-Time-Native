@@ -1,8 +1,11 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import React from 'react';
-import {ListItem, Button} from '@rneui/themed';
-import img_product from '../assets/product/img_product.png';
+import { ListItem, Button } from '@rneui/themed';
+import { useSelector } from 'react-redux';
 const CardHistory = props => {
+  const profile = useSelector(state => state.auth.profile);
+  // const product = useSelector(state => state.auth.product);
+
   const costing = price => {
     return (
       'IDR ' +
@@ -10,6 +13,7 @@ const CardHistory = props => {
         .toFixed()
         .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     );
+
   };
   return (
     <ListItem.Swipeable
@@ -19,7 +23,7 @@ const CardHistory = props => {
           title=""
           //ganti dengan axios delete per id
           onPress={props.handler}
-          icon={{name: 'delete', color: 'white'}}
+          icon={{ name: `${profile.role}` === 'admin' ? 'check' : 'delete', color: 'white' }}
           buttonStyle={{
             borderRadius: 50,
             width: 60,
@@ -38,7 +42,8 @@ const CardHistory = props => {
         </View>
         <View style={styles.content_right}>
           <Text style={styles.name}>{props.name_product}</Text>
-          <Text style={styles.price}>{costing(props.price)}</Text>
+          <Text style={styles.price}>{profile.role === 'admin' ? `${costing(props.price)} (x${props.qty})` : costing(props.price)}</Text>
+          {profile.role === 'admin' ? <Text style={styles.price}>{props.name} </Text> : null}
           <Text style={styles.status}>Status :{props.status}</Text>
         </View>
       </View>
@@ -58,9 +63,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
-    paddingHorizontal: 50,
+    paddingHorizontal: 40,
   },
-  img_bar: {width: '80%'},
+  img_bar: { width: '80%' },
   img: {
     width: 100,
     height: 100,
@@ -88,8 +93,9 @@ const styles = StyleSheet.create({
     color: '#895537',
   },
   card: {
-    marginTop: 25,
+    marginTop: 20,
     borderRadius: 20,
+    padding: 2,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'center',

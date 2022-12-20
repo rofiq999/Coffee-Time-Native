@@ -5,6 +5,7 @@ import {
   TextInput,
   Text,
   ToastAndroid,
+  ActivityIndicator,
   // ToastAndroid,
 } from 'react-native';
 import styles from '../style/Login';
@@ -22,37 +23,47 @@ import { useNavigation } from '@react-navigation/native';
 const Login = () => {
 
   const dispatch = useDispatch();
-  const navigate = useNavigation()
+  const navigation = useNavigation()
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  
-  const valueEmail = (e) => {setEmail(e), console.log(e)}
-  const valuePassword = (e) => {setPassword(e), console.log(e)}
-  
+  const [loading, setLoading] = useState(false);
+
+  const valueEmail = e => {
+    setEmail(e), console.log(e);
+  };
+  const valuePassword = e => {
+    setPassword(e), console.log(e);
+  };
   const handleLogin = () => {
+    setLoading(true)
     LoginUser({email: email, passwords: password})
-    .then((res)=> {
-      AsyncStorage.setItem("token", res.data.result.data.token)
-      AsyncStorage.setItem("role", res.data.result.data.role)
-      dispatch(authActions.userIDThunk((res.data.result.data.token),
-      () => {
+      .then(res => {
+        setLoading(true);
+        AsyncStorage.setItem('token', res.data.result.data.token);
+        AsyncStorage.setItem('role', res.data.result.data.role);
+        dispatch(
+          authActions.userIDThunk(res.data.result.data.token, () => {
+            ToastAndroid.showWithGravity(
+              'Login Success',
+              ToastAndroid.LONG,
+              ToastAndroid.TOP,
+            ),
+              navigation.navigate('Home');
+          }),
+        )
+        setLoading(false)
+      })
+      .catch((err) => {
+        setLoading(true);
         ToastAndroid.showWithGravity(
-          "Login Success",
+          err.response.data.msg.msg,
           ToastAndroid.LONG,
           ToastAndroid.TOP,
-          ),
-        navigate.push('Home')}
-      ))
-    })
-    .catch((err) => {
-      ToastAndroid.showWithGravity(
-        err.response.data.msg.msg,
-        ToastAndroid.LONG,
-        ToastAndroid.TOP,
-        )
-    })
-  }
+        );
+        setLoading(false);
+      });
+  };
 
 
   return (
@@ -81,26 +92,36 @@ const Login = () => {
         <View style={styles.forgot_pass_box}>
           <Text
             style={styles.forgot}
-            onPress={() => navigate.push('Forgot_password')}>
+            onPress={() => navigation.navigate('Forgot_password')}>
             Forgot password?
           </Text>
         </View>
-        <ButtonOpacity
-          color={'#6a4029'}
-          text="Login"
-          radius={20}
-          colorText="white"
-          height={60}
-          width={`90%`}
-          marginBottom={20}
-          marginTop={20}
-          onPressHandler={{
-            onPress:handleLogin,
-            // onPressIn: () => console.log('Pressed In'),
-            // onPressOut: () => console.log('Pressed Out'),
-            // onLongPress: () => navigation.popToTop(),
-          }}
-        />
+        {loading ? (
+          <View style={{marginHorizontal:100, marginVertical:32}}>
+            <ActivityIndicator
+              style={styles.loading_style}
+              size="large"
+              color="#0000ff"
+            />
+          </View>
+        ) : (
+          <ButtonOpacity
+            color={'#6a4029'}
+            text="Login"
+            radius={20}
+            colorText="white"
+            height={60}
+            width={`90%`}
+            marginBottom={20}
+            marginTop={20}
+            onPressHandler={{
+              onPress: handleLogin,
+              // onPressIn: () => console.log('Pressed In'),
+              // onPressOut: () => console.log('Pressed Out'),
+              // onLongPress: () => navigation.popToTop(),
+            }}
+          />
+        )}
         <View>
           <View style={styles.content_line}>
             <View style={styles.line}></View>
@@ -120,7 +141,7 @@ const Login = () => {
             marginBottom={20}
             marginTop={20}
             onPressHandler={{
-              onPress: () => navigate.push('Home'),
+              onPress: () => console.log('google'),
             }}
           />
         </View>

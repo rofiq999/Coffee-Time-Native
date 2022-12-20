@@ -1,57 +1,158 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, ScrollView} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Text,
+  View,
+  ActivityIndicator,
+  ToastAndroid,
+  FlatList,
+} from 'react-native';
 
 import axios from 'axios';
 
 import CardProduct from '../components/CardSeeAll';
-
+import {Box, Center, CheckIcon, Select} from 'native-base';
 import styles from '../style/See_All';
+import {useFocusEffect} from '@react-navigation/core';
+import {URL} from '@env';
 
 function See_All({route}) {
+  const {category, sort} = route.params;
+
   const [product, setProduct] = useState([]);
-  // const [category, setCategory] = useState('non_coffee');
-  // const [sort, setSort] = useState();
-  // const [search, setSeacrh] = useState('');
+  const [sorting, setSorting] = useState('');
+  const [next, setNext] = useState('');
+  const [loading, setLoading] = useState(true);
 
-    const {category,sort} = route.params;
+  const handleNext = () => {
+    if (next === null) return setLoading(false);
+    handleaxios(next);
+  };
 
-  useEffect(() => {
-    axios
-      .get(
-        `https://coffee-time-be-new.vercel.app/coffee/product?category=${category}&sorting=${sort}`,
-      )
+  const handleaxios = url => {
+    setLoading(true);
+    setTimeout(() => {
+      axios
+      .get(url)
       .then(res => {
-        setProduct(res.data.result.data), console.log('data ke get');
+        setProduct([...product, ...res.data.result.data]), console.log(product);
+        setNext(res.data.result.next);
+        setLoading(false);
       })
       .catch(err => {
-        // setNotfound(err.response.data.msg)
-        console.log(err.response.data.msg);
+        ToastAndroid.showWithGravity(
+          err.response.data.msg,
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
+        setLoading(false);
       });
-  }, [category]);
+    }, 2000);
+  };
+
+  const renderItem = ({item}) => {
+    return (
+      <View>
+        <CardProduct
+          key={item.id}
+          id={item.id}
+          name={item.name}
+          image_product={item.image}
+          price={item.price}
+          size={item.size}
+        />
+      </View>
+    );
+  };
+
+  const renderLoader = () => {
+    return loading ? (
+      <View>
+        <ActivityIndicator size="large" color="#aaa" />
+      </View>
+    ) : (
+      <View>
+        <Text>data sudah habis</Text>
+      </View>
+    );
+  };
+
+  const headerList = () => {
+    return <View style={{paddingVertical: 20}}></View>;
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+        handleaxios(
+          `${URL}/product?category=${
+            category === 'favorite' ? '' : `${category}`
+          }&sorting=${sorting}&page=1&limit=4`,
+        );      
+      return () => {
+        setProduct([]);
+      };
+    }, [category, sorting]),
+  );
 
   return (
-    <ScrollView>
-      <View style={styles.all_content}>
-        <View style={styles.text_container}>
-          <Text style={styles.text}>{category}</Text>
+    // <ScrollView>
+    <View style={styles.all_content}>
+      <View style={styles.text_container}>
+        <Text style={styles.text}>{category}</Text>
+      </View>
+      {/* sorting */}
+      {sort === 'favorite' ? (
+        ''
+      ) : (
+        <View style={{paddingTop:20}}>
+          <Center>
+            <Box maxW="300">
+              <Select
+                selectedValue={sorting}
+                minWidth="200"
+                accessibilityLabel="Sort Product"
+                placeholder="Sort Product"
+                _selectedItem={{
+                  bg: 'teal.600',
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={itemValue => {
+                  setSorting(itemValue);
+                }}>
+                <Select.Item label="cheapest" value="cheapest" />
+                <Select.Item label="expensive" value="expensive" />
+                <Select.Item label="newest" value="newest" />
+                <Select.Item label="lates" value="lates" />
+              </Select>
+            </Box>
+          </Center>
         </View>
-        <View style={styles.content_card_product}>
-          <View style={styles.list_product}>
-            {/* product.length < 0 || notfound !== "Product Not Found" ? (<Text>Not Found Product</Text>) : */}
-            {product.map(e => (
-              <CardProduct
-                key={e.id}
-                id={e.id}
-                name={e.name}
-                image_product={e.image}
-                price={e.price}
-                size={e.size}
-              />
-            ))}
+      )}
+      {/* end sorting */}
+
+      <View style={styles.content_card_product}>
+        <View style={styles.content_list_product}>
+          <View
+            style={{
+              flexDirection: `row`,
+              justifyContent: `space-between`,
+              paddingBottom: 20,
+            }}>
+            <FlatList
+              data={product}
+              numColumns={2}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+              ListHeaderComponent={headerList}
+              onEndReachedThreshold={4}
+              onEndReached={handleNext}
+              ListFooterComponent={renderLoader}
+            />
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
+    // </ScrollView>
   );
 }
 

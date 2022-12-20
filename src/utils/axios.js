@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { URL } from '@env';
 
-const getURL = `https://coffee-time-be-new.vercel.app/coffee`;
+const getURL = URL;
 
 // Axios register
 export const Register = body => {
@@ -24,7 +25,7 @@ export const LoginUser = body => {
 // Axios getHistory
 export const getHistory = token => {
   return axios.get(
-    `https://coffee-time-be-new.vercel.app/coffee/transactions/history?page=1&limit=10`,
+    `${getURL}/transactions/history?page=1&limit=10`,
     {
       headers: {
         'x-access-token': token,
@@ -54,7 +55,19 @@ export const transactions = (token, body) => {
 // Axios getHistory All
 export const getHistoryAll = token => {
   return axios.get(
-    `https://coffee-time-be-new.vercel.app/coffee/transactions/history`,
+    `${getURL}/transactions/history`,
+    {
+      headers: {
+        'x-access-token': token,
+      },
+    },
+  );
+};
+
+// Axios getHistory Admin
+export const getHistoryAdmin = token => {
+  return axios.get(
+    `${getURL}/transactions/status`,
     {
       headers: {
         'x-access-token': token,
@@ -66,7 +79,7 @@ export const getHistoryAll = token => {
 // Axios Delete historyid
 export const deleteHistoryId = (token, id) => {
   return axios.delete(
-    `https://coffee-time-be-new.vercel.app/coffee/transactions/${id}`,
+    `${getURL}/transactions/${id}`,
     {
       headers: {
         'x-access-token': token,
@@ -75,11 +88,87 @@ export const deleteHistoryId = (token, id) => {
   );
 };
 
+// Axios Change Payment
+// export const changePaymentStatus = (token, statusPayment, id) => {
+//   return axios.patch(
+//     `${URL}/transactions/users/${statusPayment}/${id}`,
+//     {
+//       headers: {
+//         'x-access-token': token,
+//       },
+//     },
+//   );
+// };
+export const changePaymentStatus = (token, body, id) => {
+  return axios.patch(
+    `${getURL}/transactions/${id}`,
+    body,
+    {
+      headers: {
+        'x-access-token': token,
+      },
+    },
+  );
+};
 
 // Axios reset password
 export const Resetpassword = (token, body) => {
   return axios.patch(
-    `https://coffee-time-be-new.vercel.app/coffee/users/editPasswords`, body,
+    `${getURL}/users/editPasswords`,
+    body,
+    {
+      headers: {
+        'x-access-token': token,
+      },
+    },
+  );
+};
+
+//Axios patch profile
+export const editProfile = (token, body) => {
+  return axios.patch(`${getURL}/users/profile`, body, {
+    headers: {
+      'x-access-token': token,
+    },
+  });
+};
+
+//add product
+export const addProduct = (token, body) => {
+  return axios.post(`${getURL}/product`, body, {
+    headers: {
+      'x-access-token': token,
+    },
+  });
+};
+
+//create promo
+export const createPromo = (token, body) => {
+  return axios.post(`${getURL}/promo`, body, {
+    headers: {
+      'x-access-token': token,
+    },
+  });
+};
+
+//edit promo
+export const editPromo = (token, body, params) => {
+  return axios.patch(
+    `${getURL}/promo/${params}`,
+    body,
+    {
+      headers: {
+        'x-access-token': token,
+      },
+    },
+  );
+};
+
+//edit product
+export const editProduct = (token, body, params) => {
+  return axios.patch(
+    `${getURL}/product/${params}`,
+    body,
     {
       headers: {
         'x-access-token': token,

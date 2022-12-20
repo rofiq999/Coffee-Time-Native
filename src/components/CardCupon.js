@@ -1,12 +1,11 @@
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import icon_granpa from '../assets/cupon/icon_granpa.png';
 import {useDispatch, useSelector} from 'react-redux';
 import authAction from '../redux/actions/auth';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-const CardCupon = (props) => {
-    const navigation = useNavigation()
+const CardCupon = props => {
+  const navigation = useNavigation();
   const product = useSelector(state => state.auth.product);
   const dispatch = useDispatch();
 
@@ -14,29 +13,32 @@ const CardCupon = (props) => {
     return dispatch(
       authAction.productThunk(
         {
-          id_product: product.id_product,
-          price: (product.price - (product.price*props.discount / 100)),
-          name_product: product.name_product,
-          status: null,
-          delivery: null,
-          total: product.total,
-          image: product.image,
-          qty: product.qty,
-          payment_method: null,
-          size: product.size,
+          price: product.price - (product.price * props.discount) / 100,
           id_promo: props.promo,
         },
         () => {
-          navigation.push('Cart_Page');
+          navigation.navigate('Cart');
         },
       ),
     );
   };
   return (
     <TouchableOpacity onPress={() => handleRedux()}>
-      <View style={styles.cupon}>
+      <View
+        style={{
+          marginTop: 20,
+          paddingVertical: 10,
+          paddingLeft: 20,
+          width: '100%',
+          height: 110,
+          borderRadius: 20,
+          backgroundColor: props.hex_color,
+        }}>
         <View style={styles.card_cupon}>
-          <Image source={icon_granpa} />
+          <Image
+            source={{uri: props.image_product}}
+            style={styles.image_coupon_style}
+          />
           <View style={styles.cupon_text}>
             <Text style={styles.text_cupon}>{props.name_product}</Text>
             <Text style={styles.text_code}>{props.code}</Text>
@@ -52,25 +54,16 @@ const CardCupon = (props) => {
 export default CardCupon;
 
 const styles = StyleSheet.create({
-  cupon: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingLeft: 20,
-    width: '100%',
-    height: 110,
-    borderRadius: 20,
-    backgroundColor: '#F5C361',
-  },
   card_cupon: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   text_cupon: {
     fontFamily: 'Poppins',
     fontWeight: '700',
     fontSize: 22,
-    letterSpacing: 4,
+    letterSpacing: 2,
     color: '#000',
     width: '100%',
     paddingTop: 10,
@@ -97,5 +90,11 @@ const styles = StyleSheet.create({
     justifyContent: `center`,
     alignItems: `center`,
     paddingLeft: 10,
+  },
+  image_coupon_style: {
+    width: 70,
+    height: 70,
+    borderRadius: 20,
+    marginTop: 10,
   },
 });

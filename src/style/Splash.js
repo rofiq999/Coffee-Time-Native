@@ -32,11 +32,12 @@ const styles = StyleSheet.create({
     objectFit: 'cover',
   },
   title_center: {
+    textAlign:'center',
     color: `black`,
     fontFamily: 'Poppins',
     fontSize: 65,
-    fontWeight: '700',
-    paddingBottom: 20,
+    fontWeight: '900',
+    paddingBottom: 75,
   },
 });
 

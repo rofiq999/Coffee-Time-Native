@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   horizontalScale,
   moderateScale,
@@ -48,13 +48,23 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title_bar: {
-    marginTop: 80,
+    marginTop: 30,
   },
   swipeHand: {
     textAlign: 'center',
     marginTop: 25,
-    color: "black"
+    color: 'black',
   },
+  no_order: {
+    fontSize: 30,
+    color:'black'
+  },
+  warp_order: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 200,
+  }
 });
 
 export default styles;

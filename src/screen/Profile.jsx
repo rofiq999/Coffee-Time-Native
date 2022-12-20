@@ -1,5 +1,13 @@
-import {View, Text, ScrollView, Image, TouchableOpacity, ToastAndroid} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ToastAndroid,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useState} from 'react';
 import ButtonOpacity from '../components/ButtonOpacity';
 import styles from '../style/Profile';
 
@@ -10,52 +18,60 @@ import {useSelector} from 'react-redux';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getHistory, Resetpassword} from '../utils/axios';
-import { Button, Modal, Center} from 'native-base';
+import {Button, Modal, Center} from 'native-base';
 import {TextInput} from 'react-native-gesture-handler';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
+const Profile = () => {
+  const navigation = useNavigation();
 
-const Profile = ({navigation}) => {
-
-
-  const [oldpass, setOldpass] = useState("");
-  const [newpass, setNewpass] = useState("");
-  const [history, setHistory] = useState([])
+  const [oldpass, setOldpass] = useState('');
+  const [newpass, setNewpass] = useState('');
+  const [history, setHistory] = useState([]);
   const [notfound, setNotfound] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [deps, setDeps] = useState(0);
 
   const data_profile = useSelector(state => state.auth.profile);
 
-  const valueOldPassword = (e) => {setOldpass(e),console.log(e)}
-  const valueNewPassword = (e) => {setNewpass(e),console.log(e)}
-
+  const valueOldPassword = e => {
+    setOldpass(e), console.log(e);
+  };
+  const valueNewPassword = e => {
+    setNewpass(e), console.log(e);
+  };
 
   const getDataHistory = async () => {
     try {
+      setLoading(true);
       const getToken = await AsyncStorage.getItem('token');
       const response = await getHistory(getToken);
       // console.log(response.data.result.data)
+      setDeps(response.data.result.data.length);
       setHistory(response.data.result.data);
+      setLoading(false);
     } catch (error) {
       // console.log(error.response.data.msg)
       setNotfound(error.response.data.msg);
+      setLoading(false);
     }
   };
-
 
   const resetPWD = async () => {
     try {
       const getToken = await AsyncStorage.getItem('token');
       const response = await Resetpassword(getToken, {
         old_password: oldpass,
-        new_password: newpass
+        new_password: newpass,
       });
       // console.log(response.data.result.msg)
       ToastAndroid.showWithGravity(
         response.data.result.msg,
         ToastAndroid.LONG,
         ToastAndroid.TOP,
-      )
-      setShowModal(false)
+      );
+      setShowModal(false);
       // setHistory(response.data.result.data);
     } catch (error) {
       // console.log(error.response.data.msg.msg)
@@ -63,14 +79,17 @@ const Profile = ({navigation}) => {
         error.response.data.msg.msg,
         ToastAndroid.LONG,
         ToastAndroid.TOP,
-      )
+      );
     }
   };
 
-
-  useEffect(() => {
-    getDataHistory();
-  }, []);
+  useFocusEffect(React.useCallback(() => {
+    getDataHistory()
+  },[deps]) )
+  // useEffect(() => {
+  //   getDataHistory();
+  //   console.log(history);
+  // }, [deps]);
 
   return (
     <ScrollView>
@@ -80,7 +99,7 @@ const Profile = ({navigation}) => {
             <Image source={{uri: data_profile.image}} style={styles.img} />
             <TouchableOpacity
               onPress={() => {
-                navigation.push('ProfileEdit');
+                navigation.navigate('ProfileEdit');
               }}>
               <View style={styles.pencil_bar}>
                 <Pencil
@@ -119,28 +138,38 @@ const Profile = ({navigation}) => {
             <Text style={styles.text_order}>Order History</Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.push('History');
+                navigation.navigate('History');
               }}>
-              <View >
+              <View>
                 <Text style={styles.seemore}> see more</Text>
               </View>
             </TouchableOpacity>
           </View>
           <ScrollView horizontal={true} overScrollMode={'auto'}>
-            <View style={styles.order_product}>
-              {notfound === 'History Not Found' ? (
-                <Text>Please order product to add history in here</Text>
-              ) : (
-                history.map((e, index) => (
-                  <View key={index}>
-                    <Image
-                      style={styles.img_order}
-                      source={{uri: history[index].image}}
-                    />
-                  </View>
-                ))
-              )}
-            </View>
+            {loading ? (
+              <View style={{marginHorizontal:180, marginVertical:26.5}}>
+                <ActivityIndicator
+                  style={styles.loading_style}
+                  size="large"
+                  color="#0000ff"
+                />
+              </View>
+            ) : (
+              <View style={styles.order_product}>
+                {notfound === 'History Not Found' ? (
+                  <Text style={{color:'black'}}>Please order product to add history in here</Text>
+                ) : (
+                  history.map((e, index) => (
+                    <View key={index}>
+                      <Image
+                        style={styles.img_order}
+                        source={{uri: history[index].image}}
+                      />
+                    </View>
+                  ))
+                )}
+              </View>
+            )}
           </ScrollView>
         </View>
         {/* button */}
@@ -210,7 +239,7 @@ const Profile = ({navigation}) => {
               onPress: () => navigation.navigate('Get_Start'),
               onPressIn: () => console.log('Pressed In'),
               onPressOut: () => console.log('Pressed Out'),
-              onLongPress: () => navigation.popToTop(),
+              onLongPress: () => navigation.jumpTo('Home'),
             }}
           />
         </View>
@@ -252,7 +281,7 @@ const Profile = ({navigation}) => {
             <Modal.Footer>
               <Button.Group space={2}>
                 <Button
-                  colorScheme="primary"
+                  colorScheme="success"
                   width={20}
                   onPress={() => {
                     resetPWD();

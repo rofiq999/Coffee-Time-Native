@@ -9,31 +9,16 @@ const styles = StyleSheet.create({
   container_up: {
     alignItems: 'center',
   },
-  input: {
-    borderBottomWidth: 1,
-    borderColor: `#BCBABA`,
-    borderWidth: 0,
-    fontFamily: 'Poppins',
-    fontSize: 10,
-    height: 40,
-    margin: 12,
-    outlineWidth: 4,
-    padding: 10,
-    width: `80%`,
-    color: 'black',
-    textAlign: 'center',
-    fontWeight: '400',
-  },
   input_bottom: {
     borderBottomWidth: 1,
     borderColor: `#BCBABA`,
     borderWidth: 0,
     fontFamily: 'Poppins',
     fontSize: 10,
-    marginTop:10,
-    marginBottom:10,
+    // marginTop:10,
+    marginBottom:20,
     outlineWidth: 4,
-    width: `90%`,
+    width: `100%`,
     color: 'black',
     fontWeight: '400',
   },
@@ -49,6 +34,50 @@ const styles = StyleSheet.create({
     height: 150,
     marginTop:10,
   },
+  container_promo_input: {
+    marginTop:20,
+    // marginBottom:30,
+  },
+  input_bottom_valid: {
+    borderBottomWidth: 1,
+    borderColor: `#BCBABA`,
+    borderWidth: 0,
+    fontFamily: 'Poppins',
+    fontSize: 14,
+    paddingTop:20,
+    paddingBottom:20,
+    outlineWidth: 4,
+    width: `100%`,
+    color: 'black',
+    fontWeight: '400',
+  },
+  preview_left: {
+    paddingRight:20
+  },
+  title_1 : {
+    color: `black`,
+    fontFamily: `Poppins`,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  title_2 : {
+    color: `black`,
+    fontFamily: `Poppins`,
+    fontSize: 14,
+    fontWeight: '400',
+    paddingVertical:5
+  },
+  title_3 : {
+    color: `black`,
+    fontFamily: `Poppins`,
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  image_preview: {
+    width: 70,
+    height: 70,
+    borderRadius:20
+  }
 });
 
 export default styles;

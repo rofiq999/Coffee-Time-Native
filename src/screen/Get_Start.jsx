@@ -27,7 +27,6 @@ const Get_Start = ({navigation}) => {
             onPress: () => navigation.navigate('Register'),
             onPressIn: () => console.log('Pressed In'),
             onPressOut: () => console.log('Pressed Out'),
-            onLongPress: () => navigation.popToTop(),
           }}
         />
         <ButtonOpacity
@@ -42,7 +41,6 @@ const Get_Start = ({navigation}) => {
             onPress: () => navigation.navigate('Login'),
             onPressIn: () => console.log('Pressed In'),
             onPressOut: () => console.log('Pressed Out'),
-            onLongPress: () => navigation.popToTop(),
           }}
         />
       </View>

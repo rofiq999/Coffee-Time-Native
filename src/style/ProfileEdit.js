@@ -34,13 +34,26 @@ const styles = StyleSheet.create({
     color: '#9F9F9F',
     fontWeight: '700',
     fontSize: 13,
-    marginLeft: 4,
+    marginTop:20
   },
   input: {
     borderBottomWidth: 1,
-    fontSize: 13,
+    fontSize: 17,
     borderBottomColor: '#9F9F9F',
     fontFamily: 'Poppins',
+    color: 'black',
+    maxWidth:"100%",
+    height:50
+  },
+  Text_input:{
+    paddingTop:13,
+    borderBottomWidth: 1,
+    fontSize: 17,
+    borderBottomColor: '#9F9F9F',
+    fontFamily: 'Poppins',
+    color: 'black',
+    maxWidth:"100%",
+    height:50
   },
   form: {
     textAlign: 'left',
@@ -51,7 +64,20 @@ const styles = StyleSheet.create({
   },
   input_bar: {
     marginTop: 10,
+    marginBottom:20
   },
+  gender: {
+    fontSize: 17,
+    fontFamily: 'Poppins',
+    color: 'black',
+    maxWidth:"100%"
+  },
+  two_btn: {
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    width:'80%'
+  }
 });
 
 export default styles;

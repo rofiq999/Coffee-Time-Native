@@ -3,47 +3,46 @@ import {View, Text, ScrollView} from 'react-native';
 import ButtonOpacity from '../components/ButtonOpacity';
 import {NativeBaseProvider, Radio} from 'native-base';
 import styles from '../style/Delivery';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import authAction from '../redux/actions/auth';
+// import {useNavigation} from '@react-navigation/core';
 
 function Delivery({navigation}) {
+  // const navigation = useNavigation();
 
-  const profile = useSelector((state) => state.auth.profile)
-  const product = useSelector((state) => state.auth.product)
-  const dispatch = useDispatch()
+  const profile = useSelector(state => state.auth.profile);
+  const product = useSelector(state => state.auth.product);
+  const dispatch = useDispatch();
 
   const [value, setValue] = useState('1');
 
-
-  const costing = (price) => {
-    return 'IDR ' + parseFloat(price).toFixed().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-  }
+  const costing = price => {
+    return (
+      'IDR ' +
+      parseFloat(price)
+        .toFixed()
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    );
+  };
 
   const handleValue = () => {
-    if (value === "1" ) return 5000
-    return 0
-  }
+    if (value === '1') return 5000;
+    return 0;
+  };
 
   const handleRedux = () => {
-    dispatch(authAction.productThunk(
-      {
-        id_product: product.id_product,
-        price: product.price,
-        name_product: product.name_product,
-        status: null,
-        delivery: parseInt(value),
-        total: (product.total + handleValue()),
-        image: product.image,
-        qty: product.qty,
-        payment_method: null,
-        size: product.size,
-        id_promo: product.id_promo
-      },
-      () => {
-        navigation.navigate('Payment')
-      }
-      ))
-  }
+    dispatch(
+      authAction.productThunk(
+        {
+          delivery: parseInt(value),
+          total: product.total + handleValue(),
+        },
+        () => {
+          navigation.replace('Payment');
+        },
+      ),
+    );
+  };
 
   return (
     <NativeBaseProvider>
@@ -54,16 +53,19 @@ function Delivery({navigation}) {
           </View>
           <View style={styles.address_container}>
             <Text style={styles.address_text_details}>Address details</Text>
-            <Text style={styles.change_btn} onPress={() => navigation.push('ProfileEdit')}>
+            <Text
+              style={styles.change_btn}
+              onPress={() => navigation.navigate('ProfileEdit')}>
               change
             </Text>
           </View>
           <View style={styles.address_main_container}>
             <View style={styles.address_main_box}>
-              <Text style={styles.main_address_text}>{`Delivery : ${profile.displayname}`}</Text>
-              <Text style={styles.detail_address_text}>
-                {profile.address}
-              </Text>
+              <Text
+                style={
+                  styles.main_address_text
+                }>{`Delivery : ${profile.displayname}`}</Text>
+              <Text style={styles.detail_address_text}>{profile.address}</Text>
               <Text style={styles.number_text}>{profile.phone_number}</Text>
             </View>
           </View>
@@ -104,11 +106,15 @@ function Delivery({navigation}) {
           </View>
           <View style={styles.price_container}>
             <Text style={styles.total_text}>Delivery</Text>
-            <Text style={styles.price_text}>{(value === "1") ? costing(5000) : 0 }</Text>
+            <Text style={styles.price_text}>
+              {value === '1' ? costing(5000) : 0}
+            </Text>
           </View>
           <View style={styles.price_container}>
             <Text style={styles.total_text}>Total</Text>
-            <Text style={styles.price_text}>{costing(product.total + handleValue() )}</Text>
+            <Text style={styles.price_text}>
+              {costing(product.total + handleValue())}
+            </Text>
           </View>
           <ButtonOpacity
             color={'#6A4029'}
