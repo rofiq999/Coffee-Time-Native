@@ -60,9 +60,10 @@ const Login = () => {
           err.response.data.msg.msg,
           ToastAndroid.LONG,
           ToastAndroid.TOP,
-        );
-        setLoading(false);
-      });
+          );
+          setLoading(false);
+        });
+       
   };
 
 

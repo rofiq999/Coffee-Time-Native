@@ -17,7 +17,7 @@ import axios from 'axios';
 import ArrowRightSec from 'react-native-vector-icons/AntDesign';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -70,7 +70,7 @@ const Home = () => {
       setFood(true),
       setCategory('coffee'),
       setSort('cheapest');
-    setSearch(search);
+    setSearch('');
   };
   const navActive3 = () => {
     setNavNonCoff(false),
@@ -80,7 +80,7 @@ const Home = () => {
       setFood(true),
       setCategory('non_coffee'),
       setSort();
-    setSearch(search);
+    setSearch('');
   };
   const navActive4 = () => {
     setNavadd(false),
@@ -90,7 +90,7 @@ const Home = () => {
       setFood(true),
       setCategory('addon');
     setSort();
-    setSearch(search);
+    setSearch('');
   };
   const navActive5 = () => {
     setFood(false),
@@ -100,7 +100,7 @@ const Home = () => {
       setNavNonCoff(true),
       setCategory('foods'),
       setSort();
-    setSearch(search);
+    setSearch('');
   };
 
 
@@ -111,7 +111,7 @@ const Home = () => {
         setLoading(true)
         axios
           .get(
-            `${URL}/product?category=${category}&sorting=${sort}&page=1&limit=10&name_product=${search}`,
+            `${URL_BE}/product?category=${category}&sorting=${sort}&page=1&limit=10&name_product=${search}`,
           )
           .then(res => {
             console.log(res.data);

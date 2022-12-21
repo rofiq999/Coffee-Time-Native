@@ -6,7 +6,7 @@ import axios from 'axios';
 import authAction from '../redux/actions/auth';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/core';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 
 const ProductDetail = ({route}) => {
   const {id_product} = route.params;
@@ -20,8 +20,9 @@ const ProductDetail = ({route}) => {
 
   const getProductByid = () => {
     setLoading(true);
+    console.log(URL_BE);
     axios
-      .get(`${URL}/product/${id_product}`)
+      .get(`${URL_BE}/product/${id_product}`)
       .then(res => {
         setProduct(res.data.result.data[0]);
         setLoading(false);

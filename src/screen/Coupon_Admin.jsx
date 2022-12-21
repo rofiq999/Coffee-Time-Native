@@ -13,7 +13,7 @@ import icon_search from '../assets/cupon/icon_search.png';
 import CardCupon from '../components/CardCouponAdmin';
 import axios from 'axios';
 import {useFocusEffect} from '@react-navigation/native';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 
 const Cupon_Admin = () => {
   const [promo, setPromo] = useState([]);
@@ -25,7 +25,7 @@ const Cupon_Admin = () => {
     React.useCallback(() => {
         setLoading(true);
         axios
-          .get(`${URL}/promo/Getpromo`)
+          .get(`${URL_BE}/promo/Getpromo`)
           .then(res => {
             setPromo(res.data.result);
             // console.log(res.data.result)

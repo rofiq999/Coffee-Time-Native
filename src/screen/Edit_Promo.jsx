@@ -15,10 +15,11 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import camera_default from '../assets/add/camera.png';
 import {Box, CheckIcon, Select} from 'native-base';
 import axios from 'axios';
-import {editPromo} from '../utils/axios'
+import {editPromo, deletePromo} from '../utils/axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import {URL} from '@env';
+import Iconbutton from 'react-native-vector-icons/Feather';
+import {URL_BE} from '@env';
 
 function Edit_Promo_Admin({route}) {
 
@@ -33,16 +34,18 @@ function Edit_Promo_Admin({route}) {
   const [disc, setDisc] = useState('');
   const [hex, setHex] = useState('');
   const [image, setImage] = useState('');
-  // const [id_product, setId_product] = useState(null)
   const [promoID, setPromoID] = useState(null)
   const [nameproduct, setNameproduct] = useState('')
   const [display, setDisplay] = useState(null);
-  // const [deps, setDeps] = useState(0)
+  const [showdel, setShowdel] = useState(false)
+  const [day, setDay] = useState(new Date())
   
 
   const handleShowedit = () => {
     setModals(!modals);
   };
+
+  const deleteShow = () => {setShowdel(true)}
 
   const handleShowCard = () => {
     if(!display || !code || !disc || !hex || !valid) return (
@@ -55,12 +58,13 @@ function Edit_Promo_Admin({route}) {
   };
 
   const dateHandle = (event, value) => {
-    setValid(
-      value.getFullYear() + '-' + (value.getMonth() + 1)  + '-' + value.getDate(),
-    );
+    setDay(value)
+    setValid(value.getFullYear() + '-' + (value.getMonth() + 1)  + '-' + value.getDate());
     setShow(false);
   };
-
+  console.log(day)
+  console.log(valid)
+  
   const showMode = () => {
     setShow(!show);
   };
@@ -126,11 +130,8 @@ function Edit_Promo_Admin({route}) {
   
 
   useEffect(() => {
-    // const random = () => {return (Math.random() * 1000000)}
-    // const {id_promo} = route.params;
-    console.log(id_promo)
     axios
-      .get(`${URL}/promo/promo/${id_promo}`)
+      .get(`${URL_BE}/promo/promo/${id_promo}`)
       .then(res => {
         setDisplay(res.data.result.data[0].image)
         setCode(res.data.result.data[0].code)
@@ -162,7 +163,7 @@ function Edit_Promo_Admin({route}) {
         uri: image[0].uri,
       });
       await editPromo(getToken, formData, promoID)
-      console.log("clear axios")
+      // console.log("clear axios")
       ToastAndroid.showWithGravity(
         'Success edit promo',
         ToastAndroid.LONG,
@@ -170,7 +171,7 @@ function Edit_Promo_Admin({route}) {
       )
       navigation.navigate('Cupon_Admin')
     } catch (error) {
-      console.log(error.response, "error")
+      // console.log("kena Catch bawah")
       ToastAndroid.showWithGravity(
         error.response.data.msg,
         ToastAndroid.LONG,
@@ -180,12 +181,41 @@ function Edit_Promo_Admin({route}) {
 
   }
 
+  const handleDeletePromo = async () => {
+    try {
+      const getToken = await AsyncStorage.getItem('token');
+      await deletePromo(getToken, id_promo)
+      ToastAndroid.showWithGravity(
+        "Delete promo success",
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+      navigation.navigate('MainScreen')
+    } catch (error) {
+      console.log(error)
+      ToastAndroid.showWithGravity(
+        "server error",
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+    }
+  }
 
 
   return (
     <>
       <ScrollView>
         <View style={styles.all_container}>
+        <View style={{position:`absolute`, top:-40, right:0, backgroundColor:`#FFBA33`, borderRadius:50, padding:10}}>
+          <Iconbutton
+            color="black"
+            brand={'Feather'}
+            name="trash"
+            size={25}
+            type="material"
+            onPress={() => deleteShow()}
+          />
+          </View>
           <View style={styles.container_up}>
             <Image
               source={display !== null ? {uri: display} : camera_default}
@@ -258,7 +288,7 @@ function Edit_Promo_Admin({route}) {
               style={styles.input_bottom_valid}
               onPress={() => showMode()}
               keyboardType="none">
-              {valid === '' ? 'input date valid coupon' : valid}
+              {valid}
             </Text>
           </View>
           <View>
@@ -283,7 +313,7 @@ function Edit_Promo_Admin({route}) {
       </ScrollView>
       {show && (
         <DateTimePicker
-          value={new Date()}
+          value={day}
           mode={'date'}
           display="default"
           onChange={dateHandle}
@@ -389,6 +419,47 @@ function Edit_Promo_Admin({route}) {
           </Modal.Content>
         </Modal>
       </Center>
+
+      <Center>
+              <Modal
+                isOpen={showdel}
+                onClose={() => setShowdel(false)}
+                _backdrop={{
+                  _dark: {
+                    bg: 'coolGray.800',
+                  },
+                  bg: 'warmGray.50',
+                }}>
+                <Modal.Content maxWidth="350" maxH="212">
+                  <Modal.CloseButton />
+                  <Modal.Header>Delete Product</Modal.Header>
+                  <Modal.Body>
+                    do you want to delete this product ?
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button.Group space={2}>
+                      <Button
+                        colorScheme="success"
+                        width={20}
+                        onPress={() => {
+                          handleDeletePromo(), setShowdel(false);
+                        }}>
+                        Ok
+                      </Button>
+                      <Button
+                        variant="solid"
+                        width={20}
+                        colorScheme="danger"
+                        onPress={() => {
+                          setShowdel(false);
+                        }}>
+                        Cancel
+                      </Button>
+                    </Button.Group>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
+            </Center>
     </>
   );
 }

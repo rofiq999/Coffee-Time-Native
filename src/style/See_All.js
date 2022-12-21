@@ -1,30 +1,30 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   all_content: {
     marginTop: 30,
     marginBottom: 50,
-    paddingBottom:80,
+    paddingBottom: 80,
     width: '100%',
     justifyContent: 'center',
     alignContent: 'center',
-    paddingHorizontal:30
+    paddingHorizontal: 30
   },
   content_card_product: {
-    paddingTop:50
+    paddingTop: 50
   },
   list_product: {
     display: `flex`,
     flexDirection: `row`,
     flexWrap: 'wrap',
-    justifyContent:`flex-start`,
-    paddingTop:20
+    justifyContent: `flex-start`,
+    paddingTop: 20
   },
   content_list_product: {
     display: `flex`,
     flexDirection: `row`,
-    justifyContent:`space-between`,  
-    flexWrap: 'wrap',  
+    justifyContent: `space-between`,
+    flexWrap: 'wrap',
   },
   text: {
     color: `black`,
@@ -35,13 +35,18 @@ const styles = StyleSheet.create({
   text_container: {
     justifyContent: 'center',
     flexDirection: 'row',
-    paddingTop:50
+    paddingTop: 50
   },
   content_pagination_all: {
-    display:`flex`,
-    flexDirection:`row`,
-    justifyContent:`space-between`,
-    paddingHorizontal:30
+    display: `flex`,
+    flexDirection: `row`,
+    justifyContent: `space-between`,
+    paddingHorizontal: 30
+  },
+  text_sold: {
+    textAlign: 'center',
+    fontFamily: 'Poppins',
+    fontSize: 15
   }
 });
 

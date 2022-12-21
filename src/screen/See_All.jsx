@@ -13,7 +13,7 @@ import CardProduct from '../components/CardSeeAll';
 import {Box, Center, CheckIcon, Select} from 'native-base';
 import styles from '../style/See_All';
 import {useFocusEffect} from '@react-navigation/core';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 
 function See_All({route}) {
   const {category, sort} = route.params;
@@ -71,7 +71,7 @@ function See_All({route}) {
       </View>
     ) : (
       <View>
-        <Text>data sudah habis</Text>
+        <Text style={styles.text_sold}>data not found </Text>
       </View>
     );
   };
@@ -83,7 +83,7 @@ function See_All({route}) {
   useFocusEffect(
     React.useCallback(() => {
         handleaxios(
-          `${URL}/product?category=${
+          `${URL_BE}/product?category=${
             category === 'favorite' ? '' : `${category}`
           }&sorting=${sorting}&page=1&limit=4`,
         );      

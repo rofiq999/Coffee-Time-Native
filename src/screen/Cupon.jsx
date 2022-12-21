@@ -13,7 +13,7 @@ import icon_search from '../assets/cupon/icon_search.png';
 import CardCupon from '../components/CardCupon';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 // import {useNavigation} from '@react-navigation/core';
 // import authAction from '../redux/actions/auth';
 
@@ -43,7 +43,7 @@ const Cupon = () => {
     setLoading(true);
     axios
       .get(
-        `${URL}/promo/?product_id=${product.id_product}`,
+        `${URL_BE}/promo/?product_id=${product.id_product}`,
       )
       .then(res => {
         setPromo(res.data.result)

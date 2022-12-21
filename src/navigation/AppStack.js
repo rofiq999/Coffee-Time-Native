@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import DrawerStack from './DrawerStack';
 
 import Cart from 'react-native-vector-icons/Feather';
@@ -25,10 +25,10 @@ import NewProduct from '../screen/NewProduct';
 import Chat_Room from '../screen/Chat_Room';
 import New_Promo from '../screen/New_Promo';
 
-import {useNavigation} from '@react-navigation/core';
-import {moderateScale} from '../helpers/Metrics';
+import { useNavigation } from '@react-navigation/core';
+import { moderateScale } from '../helpers/Metrics';
 import Cupon from '../screen/Cupon';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import Edit_Promo_Admin from '../screen/Edit_Promo';
 import Edit_Product from '../screen/Edit_Product';
 import Chat from '../screen/Chat';
@@ -44,28 +44,29 @@ const AppStack = () => {
       <Stack.Screen
         name="Splash"
         component={Splash}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Get_Start"
         component={Get_Start}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Forgot_password"
         component={Forgot_password}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Register"
         component={Register}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Login"
         component={Login}
         options={{
           swipeEnabled: false,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -199,7 +200,7 @@ const AppStack = () => {
           headerLeft: props => (
             <ButtonLeft
               {...props}
-              style={{marginLeft: 15}}
+              style={{ marginLeft: 15 }}
               color="#6A4029"
               brand={'Feather'}
               name="chevron-left"
@@ -292,7 +293,7 @@ const AppStack = () => {
             fontSize: 20,
           },
           headerTransparent: true,
-          headerStyle: {backgroundColor: 'rgb(242, 242, 242)'},
+          headerStyle: { backgroundColor: 'rgb(242, 242, 242)' },
           headerLeft: props => (
             <ButtonLeft
               style={{
@@ -346,7 +347,7 @@ const AppStack = () => {
         options={{
           headerShown: true,
           headerTitleAlign: 'center',
-          headerStyle: {backgroundColor: 'rgb(242, 242, 242)'},
+          headerStyle: { backgroundColor: 'rgb(242, 242, 242)' },
           headerTitleStyle: {
             color: 'black',
             fontWeight: '700',
@@ -393,9 +394,8 @@ const AppStack = () => {
         component={History}
         options={{
           headerShown: true,
-          headerTitle: `${
-            profile.role === 'admin' ? 'Customer Order' : 'History'
-          }`,
+          headerTitle: `${profile.role === 'admin' ? 'Customer Order' : 'History'
+            }`,
           headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: 'rgb(242, 242, 242)',
@@ -425,14 +425,14 @@ const AppStack = () => {
       <Stack.Screen
         name="Home"
         component={DrawerStack}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
-                name="Chat_Room"
-                component={Chat_Room}
-                options={{
-                  headerShown: false,
-                }}
+        name="Chat_Room"
+        component={Chat_Room}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="See_All"
@@ -446,7 +446,7 @@ const AppStack = () => {
             fontWeight: '700',
             fontSize: 20,
           },
-          headerStyle: {backgroundColor: 'rgb(242, 242, 242)'},
+          headerStyle: { backgroundColor: 'rgb(242, 242, 242)' },
         }}
       />
       <Stack.Screen

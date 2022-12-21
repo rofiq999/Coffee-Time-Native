@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         justifyContent: 'center',
         paddingHorizontal: 30,
+        marginTop: 20,
         backgroundColor: '#FFF',
     },
     search: {
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         paddingTop: 10,
         paddingHorizontal: 20,
+        marginTop: 50
     },
     warp_text: {
         borderWidth: 1,

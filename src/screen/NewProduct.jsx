@@ -33,7 +33,7 @@ function NewProduct() {
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
   const [size, setSize] = useState('');
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(0);
   const [stock, setStock] = useState('');
   const [description, setDescription] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -45,9 +45,7 @@ function NewProduct() {
   };
 
   const returnInitial = () => {
-    setFilePath(
-      '',
-    ),
+    setFilePath(null),
       setImage(null),
       setName(''),
       setCategory(''),
@@ -131,6 +129,8 @@ function NewProduct() {
       );
     }
   };
+
+
 
   return (
     <>
@@ -238,7 +238,7 @@ function NewProduct() {
               value={name}
               placeholder="Type product name min. 30 characters"
               keyboardType="none"
-              placeholderTextColor="#9F9F9F"
+              placeholderTextColor="black"
               onChangeText={e => {
                 setName(e), console.log(e);
               }}
@@ -248,20 +248,19 @@ function NewProduct() {
               placeholder="Type product price"
               value={price}
               keyboardType="numeric"
-              placeholderTextColor="#9F9F9F"
-              onChangeText={e => {
-                setPrice(e), console.log(e);
+              placeholderTextColor="black"
+              onChangeText={e=> {
+                setPrice(e)
               }}
             />
-          </View>
-          <View>
+          <View style={{width:`90%`}}>
             <Text style={styles.text}>input category</Text>
-            <View>
-              <Center>
-                <Box maxW="300">
+            <View style={{width:`100%`}}>
+              <Center style={{paddingTop:10}}>
+                <Box maxW="100%">
                   <Select
                     selectedValue={category}
-                    minWidth="2xs"
+                    minWidth="100%"
                     accessibilityLabel="set category"
                     placeholder="set category"
                     _selectedItem={{
@@ -281,12 +280,12 @@ function NewProduct() {
               </Center>
             </View>
             <Text style={styles.text}>Input size</Text>
-            <View style={{width: '90%'}}>
+            <View style={{width: '100%'}}>
               <Center>
-                <Box maxW="300">
+                <Box maxW="100%">
                   <Select
                     selectedValue={size}
-                    minWidth="2xs"
+                    minWidth="100%"
                     accessibilityLabel="set size"
                     placeholder="set size"
                     _selectedItem={{
@@ -310,7 +309,7 @@ function NewProduct() {
               value={stock}
               placeholder="input stock"
               keyboardType="numeric"
-              placeholderTextColor="#9F9F9F"
+              placeholderTextColor="black"
               onChangeText={e => {
                 setStock(e), console.log(e);
               }}
@@ -321,11 +320,12 @@ function NewProduct() {
               value={description}
               placeholder="Describe your product min. 150 characters"
               keyboardType="none"
-              placeholderTextColor="#9F9F9F"
+              placeholderTextColor="black"
               onChangeText={e => {
                 setDescription(e), console.log(e);
               }}
             />
+          </View>
           </View>
           <ButtonOpacity
             color={'#6A4029'}

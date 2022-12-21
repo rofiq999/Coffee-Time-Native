@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import ButtonOpacity from '../components/ButtonOpacity';
 import styles from '../style/NewProduct';
-
+import Iconbutton from 'react-native-vector-icons/Feather';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -21,18 +21,16 @@ import {
   NativeBaseProvider,
   Select,
 } from 'native-base';
-import {editProduct} from '../utils/axios';
+import {editProduct, deleteProduct} from '../utils/axios';
 import camera_default from '../assets/add/camera.png';
 import axios from 'axios';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 // import {useNavigation} from '@react-navigation/native';
 
 function Edit_Product({route, navigation}) {
   const {id_product} = route.params;
 
-  const [filePath, setFilePath] = useState(
-    null,
-  );
+  const [filePath, setFilePath] = useState(null);
   const [image, setImage] = useState(null);
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
@@ -42,6 +40,7 @@ function Edit_Product({route, navigation}) {
   const [description, setDescription] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
+  const [showdel, setShowdel] = useState(false)
   // const [choosePhoto, setChoosePhoto] = useState(false);
 
   useEffect(() => {
@@ -49,7 +48,7 @@ function Edit_Product({route, navigation}) {
     // const {id_product} = route.params;
     console.log(id_product);
     axios
-      .get(`${URL}/product/${id_product}`)
+      .get(`${URL_BE}/product/${id_product}`)
       .then(res => {
         setFilePath(res.data.result.data[0].image);
         setCategory(res.data.result.data[0].category);
@@ -71,6 +70,8 @@ function Edit_Product({route, navigation}) {
   const show = () => {
     setShowModal(true);
   };
+
+  const deleteShow = () => {setShowdel(true)}
 
   const camera = () => {
     const option = {
@@ -125,11 +126,12 @@ function Edit_Product({route, navigation}) {
       if (price) formData.append('price', price);
       if (stock) formData.append('stock', stock);
       if (description) formData.append('description', description);
-      if (image) formData.append('image', {
-        name: image[0].fileName,
-        type: image[0].type,
-        uri: image[0].uri,
-      });
+      if (image)
+        formData.append('image', {
+          name: image[0].fileName,
+          type: image[0].type,
+          uri: image[0].uri,
+        });
       await editProduct(getToken, formData, id_product);
       ToastAndroid.showWithGravity(
         'Edit Success',
@@ -147,6 +149,26 @@ function Edit_Product({route, navigation}) {
       );
     }
   };
+
+  const deleteproduct = async () => {
+    try {
+      const getToken = await AsyncStorage.getItem('token');
+      await deleteProduct(getToken, id_product)
+      ToastAndroid.showWithGravity(
+        "Delete product success",
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+      navigation.navigate('MainScreen')
+    } catch (error) {
+      console.log(error)
+      ToastAndroid.showWithGravity(
+        "server error",
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+    }
+  }
 
   return (
     <>
@@ -229,9 +251,22 @@ function Edit_Product({route, navigation}) {
             </Modal>
           </NativeBaseProvider>
         ) : null}
-        <View style={styles.all_container}>
+        <View style={[styles.all_container,{paddingTop:20}]}>
+          <View style={{position:`absolute`, top:0, right:40, backgroundColor:`#FFBA33`, borderRadius:50, padding:10}}>
+          <Iconbutton
+            color="black"
+            brand={'Feather'}
+            name="trash"
+            size={25}
+            type="material"
+            onPress={() => deleteShow()}
+          />
+          </View>
           <View style={styles.container_up}>
-            <Image source={filePath !== null ? {uri: filePath} : camera_default} style={styles.image} />
+            <Image
+              source={filePath !== null ? {uri: filePath} : camera_default}
+              style={styles.image}
+            />
             <ButtonOpacity
               color={'#000000'}
               text="Change picture"
@@ -264,7 +299,7 @@ function Edit_Product({route, navigation}) {
               placeholder={`${price}`}
               value={price}
               keyboardType="numeric"
-              placeholderTextColor="#9F9F9F"
+              placeholderTextColor="black"
               onChangeText={e => {
                 setPrice(e), console.log(e);
               }}
@@ -272,12 +307,12 @@ function Edit_Product({route, navigation}) {
           </View>
           <View>
             <Text style={styles.text}>input category</Text>
-            <View>
-              <Center>
-                <Box maxW="300">
+            <View style={{width: `75%`}}>
+              <Center style={{paddingTop: 10}}>
+                <Box maxW={'100%'}>
                   <Select
                     selectedValue={category}
-                    minWidth="2xs"
+                    minWidth="100%"
                     accessibilityLabel="set category"
                     placeholder="set category"
                     _selectedItem={{
@@ -295,30 +330,30 @@ function Edit_Product({route, navigation}) {
                   </Select>
                 </Box>
               </Center>
-            </View>
-            <Text style={styles.text}>Input size</Text>
-            <View style={{width: '90%'}}>
-              <Center>
-                <Box maxW="300">
-                  <Select
-                    selectedValue={size}
-                    minWidth="2xs"
-                    accessibilityLabel="set size"
-                    placeholder="set size"
-                    _selectedItem={{
-                      bg: 'teal.600',
-                      endIcon: <CheckIcon size="5" />,
-                    }}
-                    mt={1}
-                    onValueChange={itemValue => {
-                      setSize(itemValue);
-                    }}>
-                    <Select.Item label="medium" value="M" />
-                    <Select.Item label="large" value="L" />
-                    <Select.Item label="extra large" value="XL" />
-                  </Select>
-                </Box>
-              </Center>
+              <Text style={styles.text}>Input size</Text>
+              <View style={{width: '100%'}}>
+                <Center style={{paddingTop: 10}}>
+                  <Box maxW="100%">
+                    <Select
+                      selectedValue={size}
+                      minWidth="100%"
+                      accessibilityLabel="set size"
+                      placeholder="set size"
+                      _selectedItem={{
+                        bg: 'teal.600',
+                        endIcon: <CheckIcon size="5" />,
+                      }}
+                      mt={1}
+                      onValueChange={itemValue => {
+                        setSize(itemValue);
+                      }}>
+                      <Select.Item label="medium" value="M" />
+                      <Select.Item label="large" value="L" />
+                      <Select.Item label="extra large" value="XL" />
+                    </Select>
+                  </Box>
+                </Center>
+              </View>
             </View>
             <Text style={styles.text}>Stock</Text>
             <TextInput
@@ -326,14 +361,14 @@ function Edit_Product({route, navigation}) {
               value={stock}
               placeholder={`${stock}`}
               keyboardType="numeric"
-              placeholderTextColor="#9F9F9F"
+              placeholderTextColor="black"
               onChangeText={e => {
                 setStock(e), console.log(e);
               }}
             />
             <Text style={styles.text}>Description</Text>
             <TextInput
-              style={[styles.input_bottom,{width:280}]}
+              style={[styles.input_bottom, {width: 280}]}
               value={description}
               placeholder="Describe your product min. 150 characters"
               keyboardType="none"
@@ -348,7 +383,7 @@ function Edit_Product({route, navigation}) {
             text="Save"
             radius={20}
             colorText="white"
-            height={70}
+            height={50}
             width={'70%'}
             marginBottom={10}
             marginTop={20}
@@ -363,6 +398,46 @@ function Edit_Product({route, navigation}) {
             }}
           />
         </View>
+        <Center>
+              <Modal
+                isOpen={showdel}
+                onClose={() => setShowdel(false)}
+                _backdrop={{
+                  _dark: {
+                    bg: 'coolGray.800',
+                  },
+                  bg: 'warmGray.50',
+                }}>
+                <Modal.Content maxWidth="350" maxH="212">
+                  <Modal.CloseButton />
+                  <Modal.Header>Delete Product</Modal.Header>
+                  <Modal.Body>
+                    do you want to delete this product ?
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button.Group space={2}>
+                      <Button
+                        colorScheme="success"
+                        width={20}
+                        onPress={() => {
+                          deleteproduct(), setShowdel(false);
+                        }}>
+                        Ok
+                      </Button>
+                      <Button
+                        variant="solid"
+                        width={20}
+                        colorScheme="danger"
+                        onPress={() => {
+                          setShowdel(false);
+                        }}>
+                        Cancel
+                      </Button>
+                    </Button.Group>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
+            </Center>
       </ScrollView>
     </>
   );

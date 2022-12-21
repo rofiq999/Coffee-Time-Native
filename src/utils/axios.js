@@ -1,16 +1,14 @@
 import axios from 'axios';
-import { URL } from '@env';
-
-const getURL = URL;
+import { URL_BE } from '@env';
 
 // Axios register
 export const Register = body => {
-  return axios.post(`${getURL}/users`, body);
+  return axios.post(`${URL_BE}/users`, body);
 };
 
 // Axios Get user by id
 export const userID = token => {
-  return axios.get(`${getURL}/users/UserID`, {
+  return axios.get(`${URL_BE}/users/UserID`, {
     headers: {
       'x-access-token': token,
     },
@@ -19,13 +17,13 @@ export const userID = token => {
 
 // Axios Login
 export const LoginUser = body => {
-  return axios.post(`${getURL}/auth`, body);
+  return axios.post(`${URL_BE}/auth`, body);
 };
 
 // Axios getHistory
 export const getHistory = token => {
   return axios.get(
-    `${getURL}/transactions/history?page=1&limit=10`,
+    `${URL_BE}/transactions/history?page=1&limit=10`,
     {
       headers: {
         'x-access-token': token,
@@ -36,7 +34,7 @@ export const getHistory = token => {
 
 // Axios Logout
 export const Logout = token => {
-  return axios.delete(`${getURL}/auth`, {
+  return axios.delete(`${URL_BE}/auth`, {
     headers: {
       'x-access-token': token,
     },
@@ -45,7 +43,7 @@ export const Logout = token => {
 
 // Axios Transactions
 export const transactions = (token, body) => {
-  return axios.post(`${getURL}/transactions`, body, {
+  return axios.post(`${URL_BE}/transactions`, body, {
     headers: {
       'x-access-token': token,
     },
@@ -55,7 +53,7 @@ export const transactions = (token, body) => {
 // Axios getHistory All
 export const getHistoryAll = token => {
   return axios.get(
-    `${getURL}/transactions/history`,
+    `${URL_BE}/transactions/history`,
     {
       headers: {
         'x-access-token': token,
@@ -67,7 +65,7 @@ export const getHistoryAll = token => {
 // Axios getHistory Admin
 export const getHistoryAdmin = token => {
   return axios.get(
-    `${getURL}/transactions/status`,
+    `${URL_BE}/transactions/status`,
     {
       headers: {
         'x-access-token': token,
@@ -79,7 +77,7 @@ export const getHistoryAdmin = token => {
 // Axios Delete historyid
 export const deleteHistoryId = (token, id) => {
   return axios.delete(
-    `${getURL}/transactions/${id}`,
+    `${URL_BE}/transactions/${id}`,
     {
       headers: {
         'x-access-token': token,
@@ -91,7 +89,7 @@ export const deleteHistoryId = (token, id) => {
 // Axios Change Payment
 // export const changePaymentStatus = (token, statusPayment, id) => {
 //   return axios.patch(
-//     `${URL}/transactions/users/${statusPayment}/${id}`,
+//     `${URL_BE}/transactions/users/${statusPayment}/${id}`,
 //     {
 //       headers: {
 //         'x-access-token': token,
@@ -101,7 +99,7 @@ export const deleteHistoryId = (token, id) => {
 // };
 export const changePaymentStatus = (token, body, id) => {
   return axios.patch(
-    `${getURL}/transactions/${id}`,
+    `${URL_BE}/transactions/${id}`,
     body,
     {
       headers: {
@@ -114,7 +112,7 @@ export const changePaymentStatus = (token, body, id) => {
 // Axios reset password
 export const Resetpassword = (token, body) => {
   return axios.patch(
-    `${getURL}/users/editPasswords`,
+    `${URL_BE}/users/editPasswords`,
     body,
     {
       headers: {
@@ -126,8 +124,9 @@ export const Resetpassword = (token, body) => {
 
 //Axios patch profile
 export const editProfile = (token, body) => {
-  return axios.patch(`${getURL}/users/profile`, body, {
+  return axios.patch(`${URL_BE}/users/profile`, body, {
     headers: {
+      'Content-Type': 'multipart/form-data',
       'x-access-token': token,
     },
   });
@@ -135,8 +134,9 @@ export const editProfile = (token, body) => {
 
 //add product
 export const addProduct = (token, body) => {
-  return axios.post(`${getURL}/product`, body, {
+  return axios.post(`${URL_BE}/product`, body, {
     headers: {
+      'Content-Type': 'multipart/form-data',
       'x-access-token': token,
     },
   });
@@ -144,8 +144,9 @@ export const addProduct = (token, body) => {
 
 //create promo
 export const createPromo = (token, body) => {
-  return axios.post(`${getURL}/promo`, body, {
+  return axios.post(`${URL_BE}/promo`, body, {
     headers: {
+      'Content-Type': 'multipart/form-data',
       'x-access-token': token,
     },
   });
@@ -154,10 +155,11 @@ export const createPromo = (token, body) => {
 //edit promo
 export const editPromo = (token, body, params) => {
   return axios.patch(
-    `${getURL}/promo/${params}`,
+    `${URL_BE}/promo/${params}`,
     body,
     {
       headers: {
+        'Content-Type': 'multipart/form-data',
         'x-access-token': token,
       },
     },
@@ -167,8 +169,34 @@ export const editPromo = (token, body, params) => {
 //edit product
 export const editProduct = (token, body, params) => {
   return axios.patch(
-    `${getURL}/product/${params}`,
+    `${URL_BE}/product/${params}`,
     body,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'x-access-token': token,
+      },
+    },
+  );
+};
+
+
+// Axios Delete product
+export const deleteProduct = (token, id) => {
+  return axios.delete(
+    `${URL_BE}/product/${id}`,
+    {
+      headers: {
+        'x-access-token': token,
+      },
+    },
+  );
+};
+
+// Axios Delete product
+export const deletePromo = (token, id) => {
+  return axios.delete(
+    `${URL_BE}/promo/${id}`,
     {
       headers: {
         'x-access-token': token,

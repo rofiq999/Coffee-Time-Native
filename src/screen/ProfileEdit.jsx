@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   ToastAndroid,
+  ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
 import ButtonOpacity from '../components/ButtonOpacity';
@@ -20,11 +21,11 @@ import authActions from '../redux/actions/auth';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {editProfile} from '../utils/axios';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const ProfileEdit = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const profile = useSelector(state => state.auth.profile);
 
   const [firstName, setFirstName] = useState(profile.firstname);
@@ -39,15 +40,14 @@ const ProfileEdit = () => {
   const [address, setAddress] = useState(profile.address);
   const [edit, setEdit] = useState(false);
   const [deps, setDeps] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [day, setDay] = useState(new Date())
 
   const getProfile = async () => {
     try {
       // const removeToken = await AsyncStorage.removeItem('token');
       const getToken = await AsyncStorage.getItem('token');
       return dispatch(authActions.userIDThunk(getToken));
-      // setData(response.data.result[0]);
-      // setFilePath(response.data.result[0].image);
-      // console.log(response.data.result[0]);
     } catch (error) {
       console.log(error);
     }
@@ -56,24 +56,10 @@ const ProfileEdit = () => {
     getProfile();
   }, [deps]);
 
-  // const backActionHandler = () => {
-  //   navigation.navigate('Home');
-  //   navigation.closeDrawer();
-  //   return true;
-  // };
-
-  // useEffect(() => {
-  //   // Add event listener for hardware back button press on Android
-  //   BackHandler.addEventListener('hardwareBackPress', backActionHandler);
-
-  //   return () =>
-  //     // clear/remove event listener
-  //     // BackHandler.removeEventListener('hardwareBackPress', backActionHandler);
-  // }, []);
-
   const dateHandle = (event, value) => {
+    setDay(value)
     setBirthday(
-      value.getFullYear() + '/' + value.getMonth() + '/' + value.getDate(),
+      value.getFullYear() + '-' + value.getMonth() + '-' + value.getDate(),
     );
     setShow(false);
   };
@@ -90,9 +76,17 @@ const ProfileEdit = () => {
 
     launchCamera(option, res => {
       if (res.didCancel) {
-        console.log('user cancel');
+        ToastAndroid.showWithGravity(
+          'Cancel Gallery',
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
       } else if (res.errorCode) {
-        console.log(res.errorCode);
+        ToastAndroid.showWithGravity(
+          'Allow Permission',
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
       } else {
         const data = res.assets[0];
         console.log(res.assets[0]);
@@ -111,9 +105,17 @@ const ProfileEdit = () => {
 
     launchImageLibrary(option, res => {
       if (res.didCancel) {
-        console.log('user cancel');
+        ToastAndroid.showWithGravity(
+          'Cancel Gallery',
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
       } else if (res.errorCode) {
-        console.log(res.errorCode);
+        ToastAndroid.showWithGravity(
+          'Allow Permission',
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
       } else {
         const data = res.assets[0];
         setFilePath(data.uri);
@@ -125,6 +127,7 @@ const ProfileEdit = () => {
 
   const saveHandle = async () => {
     try {
+      setLoading(true);
       const getToken = await AsyncStorage.getItem('token');
       const formData = new FormData();
       if (firstName) formData.append('firstname', firstName);
@@ -140,21 +143,24 @@ const ProfileEdit = () => {
           uri: image[0].uri,
         });
 
-        await editProfile(getToken, formData);
-        ToastAndroid.showWithGravity(
-          'Success Edit Profile',
-          ToastAndroid.LONG,
-          ToastAndroid.TOP,
-          );
-          setDeps(Math.floor(Math.random()* 100000));
-          navigation.navigate("Profile")
-        } catch (error) {
-      console.log(error)
+      await editProfile(getToken, formData);
+      ToastAndroid.showWithGravity(
+        'Success Edit Profile',
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+      setDeps(Math.floor(Math.random() * 100000));
+      navigation.navigate('Profile');
+      setLoading(false);
+    } catch (error) {
+      // console.log(error)
+      setLoading(true);
       ToastAndroid.showWithGravity(
         error.response.data.msg,
         ToastAndroid.LONG,
         ToastAndroid.TOP,
       );
+      setLoading(false);
     }
   };
   return (
@@ -162,7 +168,7 @@ const ProfileEdit = () => {
       <ScrollView>
         {show && (
           <DateTimePicker
-            value={new Date()}
+            value={day}
             mode={'date'}
             display="default"
             onChange={dateHandle}
@@ -362,11 +368,11 @@ const ProfileEdit = () => {
                     space={4}
                     w="75%"
                     maxW="300px">
-                    <Radio value="Female" colorScheme="amber" size="sm" my={1}>
+                    <Radio value="female" colorScheme="amber" size="sm" my={1}>
                       Female
                     </Radio>
                     <Radio
-                      value="Male"
+                      value="male"
                       colorScheme="amber"
                       size="sm"
                       my={1}
@@ -390,16 +396,16 @@ const ProfileEdit = () => {
               {!edit ? (
                 <Text style={styles.Text_input}>
                   {birthday !== null
-                    ? birthday.slice(0,10)
+                    ? birthday.slice(0, 10)
                     : `you haven't input display name`}
                 </Text>
               ) : (
-                <Text
-                  style={styles.Text_input}
-                  onPress={() => showMode()}
-                > {birthday !== null
-                  ? birthday.slice(0,10)
-                  : `you haven't input display name`} </Text>
+                <Text style={styles.Text_input} onPress={() => showMode()}>
+                  {' '}
+                  {birthday !== null
+                    ? birthday.slice(0, 10)
+                    : `you haven't input display name`}{' '}
+                </Text>
               )}
             </View>
             <View>
@@ -423,21 +429,27 @@ const ProfileEdit = () => {
               )}
             </View>
           </View>
-          <ButtonOpacity
-            color={'#6a4029'}
-            text="Save"
-            radius={20}
-            colorText="white"
-            height={70}
-            width={`80%`}
-            marginBottom={10}
-            marginTop={10}
-            onPressHandler={{
-              onPress: () => {
-                saveHandle(), setEdit(false);
-              },
-            }}
-          />
+          {loading ? (
+            <View style={{marginTop:20}}>
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          ) : (
+            <ButtonOpacity
+              color={'#6a4029'}
+              text="Save"
+              radius={20}
+              colorText="white"
+              height={60}
+              width={`80%`}
+              marginBottom={10}
+              marginTop={20}
+              onPressHandler={{
+                onPress: () => {
+                  saveHandle(), setEdit(false);
+                },
+              }}
+            />
+          )}
         </View>
       </ScrollView>
     </NativeBaseProvider>

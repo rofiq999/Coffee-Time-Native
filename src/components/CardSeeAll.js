@@ -1,8 +1,8 @@
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import styles from '../style/CardSeeAll';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 const CardProduct = props => {
@@ -23,7 +23,7 @@ const CardProduct = props => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigate.navigate(profile.role === 'user' ? 'ProductDetail' : 'NewProduct', {
+        navigate.navigate(profile.role === 'user' ? 'ProductDetail' : 'Edit_Product', {
           id_product: props.id,
         });
       }}>
@@ -31,7 +31,7 @@ const CardProduct = props => {
         <View style={styles.Content_product}>
           <View>
             <Image
-              source={{uri: props.image_product}}
+              source={{ uri: props.image_product }}
               style={styles.image_product}
             />
           </View>

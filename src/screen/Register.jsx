@@ -10,7 +10,7 @@ import React, {useState} from 'react';
 import icon_girl from '../assets/register/icon-register.png';
 import ButtonOpacity from '../components/ButtonOpacity';
 import axios from 'axios';
-import {URL} from '@env';
+import {URL_BE} from '@env';
 
 const Register = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -29,7 +29,7 @@ const Register = ({navigation}) => {
 
   const handleRegister = () => {
     return axios
-      .post(`${URL}/users`, {
+      .post(`${URL_BE}/users`, {
         email: email,
         passwords: password,
         phone_number: phone,
